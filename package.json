@@ -1,0 +1,27 @@
+{
+  "name": "payload",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/payload.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc && vite build --watch",
+    "build": "tsc && vite build",
+    "lint": "eslint ./src --ext .ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.3.2",
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^7.13.0",
+    "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.9.1"
+  },
+  "files": [
+    "dist"
+  ]
+}
