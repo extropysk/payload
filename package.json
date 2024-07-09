@@ -1,5 +1,5 @@
 {
-  "name": "payload",
+  "name": "@extropysk/payload",
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/payload.js",
