@@ -1,3 +1,2 @@
-export const calc = (a: number, b: number) => {
-  return a + b
-}
+export { AjaxError, ajax } from './ajax'
+export { Payload } from './payload'
