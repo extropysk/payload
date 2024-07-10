@@ -2,10 +2,9 @@ type ErrorMessage = {
   message: string
 }
 
-type AjaxOptions = {
-  url: string
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  body?: object
+export type AjaxOptions = {
+  credentials?: RequestCredentials
+  headers?: Record<string, string>
 }
 
 export class AjaxError extends Error {
@@ -19,13 +18,19 @@ export class AjaxError extends Error {
   }
 }
 
-export const ajax = async <T>({ url, method, body }: AjaxOptions): Promise<T> => {
+export const ajax = async <T>(
+  url: string,
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  body?: object | null,
+  { credentials, headers }: AjaxOptions = {},
+): Promise<T> => {
   const response = await fetch(url, {
     method,
-    credentials: 'include',
+    credentials,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
   })

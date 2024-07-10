@@ -1,5 +1,5 @@
 import qs from 'qs'
-import { ajax } from './ajax'
+import { ajax, AjaxOptions } from './ajax'
 
 const OPERATORS = [
   'equals',
@@ -60,40 +60,53 @@ type FindParams = BaseParams & {
   limit?: number
 }
 
-type PayloadOptions = {
+type PayloadConfig = {
   baseUrl?: string
+  options?: AjaxOptions
+  getBearerToken?: () => string | null
 }
 
 export class Payload<T extends Record<string, unknown>> {
-  readonly baseUrl?: string
+  readonly config: PayloadConfig
 
-  constructor({ baseUrl }: PayloadOptions) {
-    this.baseUrl = baseUrl
+  constructor(config: PayloadConfig = {}) {
+    this.config = config
+  }
+
+  getOptions = (): AjaxOptions => {
+    const headers: Record<string, string> = { ...this.config.options?.headers }
+
+    const token = this.config.getBearerToken?.()
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+
+    return { ...this.config.options, headers }
   }
 
   find = <Key extends keyof T>(collection: Key, params: FindParams = {}) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
-    const url = `${this.baseUrl}/api/${String(collection)}${query}`
+    const url = `${this.config.baseUrl}/api/${String(collection)}${query}`
 
-    return ajax<PaginatedDocs<T[Key]>>({ method: 'GET', url })
+    return ajax<PaginatedDocs<T[Key]>>(url, 'GET', null, this.getOptions())
   }
 
   findByID = <Key extends keyof T>(collection: Key, id: string, params: BaseParams = {}) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
-    const url = `${this.baseUrl}/api/${String(collection)}/${id}${query}`
+    const url = `${this.config.baseUrl}/api/${String(collection)}/${id}${query}`
 
-    return ajax<T[Key]>({ method: 'GET', url })
+    return ajax<T[Key]>(url, 'GET', null, this.getOptions())
   }
 
   create = <Key extends keyof T>(collection: Key, body: Partial<T[Key]>) => {
-    const url = `${this.baseUrl}/api/${String(collection)}`
+    const url = `${this.config.baseUrl}/api/${String(collection)}`
 
-    return ajax<Doc<T[Key]>>({ method: 'POST', url, body })
+    return ajax<Doc<T[Key]>>(url, 'POST', body, this.getOptions())
   }
 
   update = <Key extends keyof T>(collection: Key, id: string, body: Partial<T[Key]>) => {
-    const url = `${this.baseUrl}/api/${String(collection)}/${id}`
+    const url = `${this.config.baseUrl}/api/${String(collection)}/${id}`
 
-    return ajax<Doc<T[Key]>>({ method: 'PATCH', url, body })
+    return ajax<Doc<T[Key]>>(url, 'PUT', body, this.getOptions())
   }
 }
