@@ -18,9 +18,11 @@ export class AjaxError extends Error {
   }
 }
 
+export type AjaxMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
 export const ajax = async <T>(
   url: string,
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  method: AjaxMethod,
   body?: object | null,
   { credentials, headers }: AjaxOptions = {},
 ): Promise<T> => {

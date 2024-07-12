@@ -1,5 +1,5 @@
 import qs from 'qs'
-import { ajax, AjaxOptions } from './ajax'
+import { ajax, AjaxMethod, AjaxOptions } from './ajax'
 
 const OPERATORS = [
   'equals',
@@ -61,16 +61,20 @@ export type FindParams = BaseParams & {
 }
 
 type PayloadConfig = {
-  baseUrl?: string
+  baseUrl: string
   options?: AjaxOptions
   getBearerToken?: () => string | null
+}
+
+const DEFAULT_CONFIG: PayloadConfig = {
+  baseUrl: '',
 }
 
 export class Payload<T extends Record<string, unknown>> {
   readonly config: PayloadConfig
 
-  constructor(config: PayloadConfig = {}) {
-    this.config = config
+  constructor(config?: PayloadConfig) {
+    this.config = { ...DEFAULT_CONFIG, ...config }
   }
 
   getOptions = (): AjaxOptions => {
@@ -108,5 +112,17 @@ export class Payload<T extends Record<string, unknown>> {
     const url = `${this.config.baseUrl}/api/${String(collection)}/${id}`
 
     return ajax<Doc<T[Key]>>(url, 'PUT', body, this.getOptions())
+  }
+
+  request = <U>(
+    url: string,
+    method: AjaxMethod,
+    body: object,
+    params: Record<string, unknown> = {},
+  ) => {
+    const query = qs.stringify(params, { addQueryPrefix: true })
+    const fullUrl = `${this.config.baseUrl}/api/${url}${query}`
+
+    return ajax<U>(fullUrl, method, body, this.getOptions())
   }
 }
