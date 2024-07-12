@@ -43,16 +43,16 @@ export type PaginatedDocs<T> = {
   totalPages: number
 }
 
-type Doc<T> = {
+export type Doc<T> = {
   message: string
   doc: T
 }
 
-type BaseParams = {
+export type BaseParams = {
   depth?: number
 }
 
-type FindParams = BaseParams & {
+export type FindParams = BaseParams & {
   where?: Where
   depth?: number
   sort?: string
