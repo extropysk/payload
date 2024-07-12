@@ -1,11 +1,19 @@
 {
   "name": "@extropysk/payload",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "license": "MIT",
   "type": "module",
-  "main": "./dist/payload.js",
+  "main": "./dist/payload.umd.cjs",
+  "module": "./dist/payload.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/payload.js",
+      "require": "./dist/payload.umd.cjs"
+    }
+  },
   "scripts": {
     "dev": "tsc && vite build --watch",
     "build": "tsc && vite build",
@@ -26,10 +34,10 @@
     "vite-plugin-dts": "^3.9.1",
     "vitest": "^2.0.1"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "qs": "^6.12.3"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
