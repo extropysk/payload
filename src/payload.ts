@@ -115,14 +115,14 @@ export class Payload<T extends Record<string, unknown>> {
   }
 
   request = <U>(
-    url: string,
+    endpoint: string,
     method: AjaxMethod,
-    body: object,
+    body?: object,
     params: Record<string, unknown> = {},
   ) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
-    const fullUrl = `${this.config.baseUrl}/api/${url}${query}`
+    const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 
-    return ajax<U>(fullUrl, method, body, this.getOptions())
+    return ajax<U>(url, method, body, this.getOptions())
   }
 }
