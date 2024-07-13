@@ -5,7 +5,6 @@ The Payload API gives you the ability to execute the same operations that are av
 ## Installation
 `yarn add @extropysk/payload`
 `npm install @extropysk/payload`
-`pnpm install @extropysk/payload`
 
 ## Get Started
 ```
@@ -27,7 +26,6 @@ The find method supports the following additional parameters:
 - `where` - pass a where query to constrain returned documents
 - `limit` - limit the returned documents to a certain number
 - `page` - get a specific page of documents
-
 
 See [Querying your Documents](https://payloadcms.com/docs/queries/overview)
 
