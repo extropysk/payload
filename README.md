@@ -33,7 +33,17 @@ Get a specific page number.
 Pass the name of a top-level field to sort by that field in ascending order. Prefix the name of the field with a minus symbol ("-") to sort in descending order. Because sorting is handled by the database, the field you wish to sort on must be stored in the database to work; not a virtual field. It is recommended to enable indexing for the fields where sorting is used.
 
 ### where
-Pass a where query to constrain returned documents. Supported operators:
+Pass a where query to constrain returned documents. Example:
+```
+{
+  color: {
+    // property name to filter on
+    equals: 'mint', // operator to use and value to compare against
+  }
+}
+```
+
+#### Operators
 - `equals` - The value must be exactly equal.
 - `not_equals` - The query will return all documents where the value is not equal.
 - `greater_than` -	For numeric or date-based fields.
@@ -46,3 +56,44 @@ Pass a where query to constrain returned documents. Supported operators:
 - `not_in`	- The value must NOT be within the provided comma-delimited list of values.
 - `all`	- The value must contain all values provided in the comma-delimited list.
 - `exists`	- Only return documents where the value either exists (true) or does not exist (false).
+
+#### AND / OR Logic
+In addition to defining simple queries, you can join multiple queries together using simple AND / OR logic. Example:
+```
+{
+  or: [
+    // array of OR conditions
+    {
+      color: {
+        equals: 'mint',
+      },
+    },
+    {
+      and: [
+        // nested array of AND conditions
+        {
+          color: {
+            equals: 'white',
+          },
+        },
+        {
+          featured: {
+            equals: false,
+          },
+        },
+      ],
+    },
+  ],
+}
+```
+
+#### Nested Properties
+When working with nested properties, which can happen when using relational fields, it is possible to use the dot notation to access the nested property. Example: 
+```
+{
+  'artists.featured': {
+    // nested property name to filter on
+    exists: true, // operator to use and boolean value that needs to be true
+  },
+}
+```
