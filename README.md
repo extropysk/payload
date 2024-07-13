@@ -18,11 +18,19 @@ const payload = new Payload<Config['collections']>({ baseUrl: 'http://localhost:
 ## Config
 - `baseUrl` - Payload CMS base url
 
-## Params
-- [Base Params](docs/BASE_PARAMS.md)
-- [Find Params](docs/FIND_PARAMS.md)
-
 ## Methods
+All methods support parameters:
+- `depth` - automatically populates relationships and uploads
+
+The find method supports the following additional parameters:
+- `sort` - sort by field
+- `where` - pass a where query to constrain returned documents
+- `limit` - limit the returned documents to a certain number
+- `page` - get a specific page of documents
+
+
+See [Querying your Documents](https://payloadcms.com/docs/queries/overview)
+
 ### find
 ```
 const categories = await payload.find('categories',
