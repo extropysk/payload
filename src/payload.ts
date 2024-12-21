@@ -1,6 +1,14 @@
 import qs from 'qs'
 import { ajax, AjaxMethod, AjaxOptions } from './ajax'
-import { BaseParams, Doc, FindParams, PaginatedDocs } from './payload.types'
+import {
+  BaseParams,
+  CountResponse,
+  Doc,
+  FindParams,
+  LoginResponse,
+  PaginatedDocs,
+  User,
+} from './payload.types'
 
 type PayloadConfig = {
   baseUrl: string
@@ -40,7 +48,11 @@ export class Payload<T extends Record<string, unknown>> {
   }
 
   count = <Key extends keyof T>(collection: Key, params: FindParams = {}) => {
-    return this.request<{ totalDocs: number }>(`${String(collection)}/count`, 'GET', null, params)
+    return this.request<CountResponse>(`${String(collection)}/count`, 'GET', null, params)
+  }
+
+  login = <U extends User = User>(email: string, password: string) => {
+    return this.request<LoginResponse<U>>(`users/login`, 'POST', { email, password })
   }
 
   request = <U>(

@@ -16,11 +16,13 @@ const OPERATORS = [
   'near',
 ] as const
 
-export type User = {
-  [key: string]: unknown
-  collection: string
-  email: string
+export type Base = {
   id: string
+}
+
+export type User = Base & {
+  email: string
+  [key: string]: unknown
 }
 
 type Operator = (typeof OPERATORS)[number]
@@ -63,3 +65,12 @@ export type FindParams = BaseParams & {
   page?: number
   limit?: number
 }
+
+export type LoginResponse<U extends User> = {
+  message: string
+  user: U
+  token: string
+  exp: number
+}
+
+export type CountResponse = { totalDocs: number }
