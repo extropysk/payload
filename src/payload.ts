@@ -1,64 +1,6 @@
 import qs from 'qs'
 import { ajax, AjaxMethod, AjaxOptions } from './ajax'
-
-const OPERATORS = [
-  'equals',
-  'contains',
-  'not_equals',
-  'in',
-  'all',
-  'not_in',
-  'exists',
-  'greater_than',
-  'greater_than_equal',
-  'less_than',
-  'less_than_equal',
-  'like',
-  'within',
-  'intersects',
-  'near',
-] as const
-
-type Operator = (typeof OPERATORS)[number]
-type WhereField = {
-  // eslint-disable-next-line no-unused-vars
-  [key in Operator]?: unknown
-}
-export type Where = {
-  [key: string]: Where[] | WhereField | undefined
-  and?: Where[]
-  or?: Where[]
-}
-
-export type PaginatedDocs<T> = {
-  docs: T[]
-  hasNextPage: boolean
-  hasPrevPage: boolean
-  limit: number
-  nextPage?: null | number
-  page?: number
-  pagingCounter: number
-  prevPage?: null | number
-  totalDocs: number
-  totalPages: number
-}
-
-export type Doc<T> = {
-  message: string
-  doc: T
-}
-
-export type BaseParams = {
-  depth?: number
-}
-
-export type FindParams = BaseParams & {
-  where?: Where
-  depth?: number
-  sort?: string
-  page?: number
-  limit?: number
-}
+import { BaseParams, Doc, FindParams, PaginatedDocs } from './payload.types'
 
 type PayloadConfig = {
   baseUrl: string
@@ -77,52 +19,46 @@ export class Payload<T extends Record<string, unknown>> {
     this.config = { ...DEFAULT_CONFIG, ...config }
   }
 
-  getOptions = (): AjaxOptions => {
-    const headers: Record<string, string> = { ...this.config.options?.headers }
-
-    const token = this.config.getBearerToken?.()
-    if (token) {
-      headers.Authorization = `Bearer ${token}`
-    }
-
-    return { ...this.config.options, headers }
-  }
-
   find = <Key extends keyof T>(collection: Key, params: FindParams = {}) => {
-    const query = qs.stringify(params, { addQueryPrefix: true })
-    const url = `${this.config.baseUrl}/api/${String(collection)}${query}`
-
-    return ajax<PaginatedDocs<T[Key]>>(url, 'GET', null, this.getOptions())
+    return this.request<PaginatedDocs<T[Key]>>(String(collection), 'GET', null, params)
   }
 
   findByID = <Key extends keyof T>(collection: Key, id: string, params: BaseParams = {}) => {
-    const query = qs.stringify(params, { addQueryPrefix: true })
-    const url = `${this.config.baseUrl}/api/${String(collection)}/${id}${query}`
-
-    return ajax<T[Key]>(url, 'GET', null, this.getOptions())
+    return this.request<T[Key]>(`${String(collection)}/${id}`, 'GET', null, params)
   }
 
   create = <Key extends keyof T>(collection: Key, body: Partial<T[Key]>) => {
-    const url = `${this.config.baseUrl}/api/${String(collection)}`
-
-    return ajax<Doc<T[Key]>>(url, 'POST', body, this.getOptions())
+    return this.request<Doc<T[Key]>>(String(collection), 'POST', body)
   }
 
   update = <Key extends keyof T>(collection: Key, id: string, body: Partial<T[Key]>) => {
-    const url = `${this.config.baseUrl}/api/${String(collection)}/${id}`
+    return this.request<Doc<T[Key]>>(`${String(collection)}/${id}`, 'PUT', body)
+  }
 
-    return ajax<Doc<T[Key]>>(url, 'PUT', body, this.getOptions())
+  delete = <Key extends keyof T>(collection: Key, id: string) => {
+    return this.request<T[Key]>(`${String(collection)}/${id}`, 'DELETE')
+  }
+
+  count = <Key extends keyof T>(collection: Key, params: FindParams = {}) => {
+    return this.request<{ totalDocs: number }>(`${String(collection)}/count`, 'GET', null, params)
   }
 
   request = <U>(
     endpoint: string,
     method: AjaxMethod,
-    body?: object,
+    body?: Record<string, unknown> | null,
     params: Record<string, unknown> = {},
   ) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 
-    return ajax<U>(url, method, body, this.getOptions())
+    const headers: Record<string, string> = { ...this.config.options?.headers }
+    const token = this.config.getBearerToken?.()
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    const options = { ...this.config.options, headers }
+
+    return ajax<U>(url, method, body, options)
   }
 }

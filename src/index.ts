@@ -1,3 +1,3 @@
-export { AjaxError, ajax } from './ajax'
-export { Payload } from './payload'
-export type { BaseParams, Doc, FindParams, PaginatedDocs } from './payload'
+export * from './ajax'
+export * from './payload'
+export * from './payload.types'
