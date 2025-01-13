@@ -57,6 +57,7 @@ export type Doc<T> = {
 
 export type BaseParams = {
   depth?: number
+  locale?: string
 }
 
 export type FindParams = BaseParams & {
