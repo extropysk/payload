@@ -6,7 +6,7 @@ The Payload API gives you the ability to execute the same operations that are av
 `yarn add @extropysk/payload`
 `npm install @extropysk/payload`
 
-## Get Started 
+## Get Started
 ```
 import { Config } from './payload-types'
 import { Payload } from '@extropysk/payload'
