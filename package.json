@@ -1,6 +1,5 @@
 {
   "name": "@extropysk/payload",
-  "version": "0.1.3",
   "private": false,
   "license": "MIT",
   "type": "module",
