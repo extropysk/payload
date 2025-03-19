@@ -30,8 +30,8 @@ export const ajax = async <T>(
     method,
     credentials,
     headers: {
-      'Content-Type': 'application/json',
       Accept: 'application/json',
+      'Content-Type': 'application/json',
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
