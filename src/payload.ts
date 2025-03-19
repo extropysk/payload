@@ -8,7 +8,7 @@ import {
   LoginResponse,
   PaginatedDocs,
   User,
-} from './payload.types'
+} from './types'
 
 type PayloadConfig = {
   baseUrl: string

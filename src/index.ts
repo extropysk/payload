@@ -1,3 +1,3 @@
 export * from './ajax'
 export * from './payload'
-export * from './payload.types'
+export * from './types'
