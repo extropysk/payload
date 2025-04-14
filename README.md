@@ -1,4 +1,4 @@
-# Payload API 
+# Payload API
 
 The Payload API gives you the ability to execute the same operations that are available through REST.
 
