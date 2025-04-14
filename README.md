@@ -1,9 +1,8 @@
-# Payload API
+# Payload SDK
 
-The Payload API gives you the ability to execute the same operations that are available through REST.
+The Payload SDK gives you the ability to execute the same operations that are available through REST.
 
 ## Installation
-`yarn add @extropysk/payload`
 `npm install @extropysk/payload`
 
 ## Get Started
