@@ -11,12 +11,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-
-    /* Output declarations */
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationDir": "dist",
-    "outDir": "dist",
+    "noEmit": true,
 
     /* Linting */
     "strict": true,
