@@ -19,6 +19,7 @@ const payload = new Payload<Config['collections']>({ baseUrl: 'http://localhost:
 ## Methods
 All methods support parameters:
 - `depth` - automatically populates relationships and uploads
+- `locale` - retrieves document(s) in a specific locale
 
 The find method supports the following additional parameters:
 - `sort` - sort by field
