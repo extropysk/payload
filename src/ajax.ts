@@ -22,12 +22,19 @@ export class AjaxError extends Error {
 
 export type AjaxMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
-export const ajax = async <T>(
-  url: string,
-  method: AjaxMethod,
-  body?: Obj | null,
-  { credentials, headers }: AjaxOptions = {},
-): Promise<T> => {
+type AjaxArgs = {
+  url: string
+  method?: AjaxMethod
+  body?: Obj | null
+  options?: AjaxOptions
+}
+
+export const ajax = async <T>({
+  url,
+  method = 'GET',
+  body = null,
+  options: { credentials, headers } = {},
+}: AjaxArgs): Promise<T> => {
   const response = await fetch(url, {
     method,
     credentials,

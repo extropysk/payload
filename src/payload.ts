@@ -28,11 +28,11 @@ export class Payload<T extends Record<string, unknown>> {
     this.config = { ...DEFAULT_CONFIG, ...config }
   }
 
-  find = <Key extends keyof T>(collection: Key, params: FindParams = {}) => {
+  find = <Key extends keyof T>(collection: Key, params?: FindParams) => {
     return this.request<PaginatedDocs<T[Key]>>(String(collection), 'GET', null, params)
   }
 
-  findByID = <Key extends keyof T>(collection: Key, id: string, params: BaseParams = {}) => {
+  findByID = <Key extends keyof T>(collection: Key, id: string, params?: BaseParams) => {
     return this.request<T[Key]>(`${String(collection)}/${id}`, 'GET', null, params)
   }
 
@@ -48,7 +48,7 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<T[Key]>(`${String(collection)}/${id}`, 'DELETE')
   }
 
-  count = <Key extends keyof T>(collection: Key, params: FindParams = {}) => {
+  count = <Key extends keyof T>(collection: Key, params?: FindParams) => {
     return this.request<CountResponse>(`${String(collection)}/count`, 'GET', null, params)
   }
 
@@ -56,7 +56,7 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<LoginResponse<U>>(`users/login`, 'POST', { email, password })
   }
 
-  request = <U>(endpoint: string, method: AjaxMethod, body?: Obj | null, params: Obj = {}) => {
+  request = <U>(endpoint: string, method?: AjaxMethod, body?: Obj | null, params?: Obj) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 
@@ -67,6 +67,6 @@ export class Payload<T extends Record<string, unknown>> {
     }
     const options = { ...this.config.options, headers }
 
-    return ajax<U>(url, method, body, options)
+    return ajax<U>({ url, method, body, options })
   }
 }
