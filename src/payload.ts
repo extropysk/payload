@@ -6,6 +6,7 @@ import {
   Doc,
   FindParams,
   LoginResponse,
+  Obj,
   PaginatedDocs,
   User,
 } from './types'
@@ -55,12 +56,7 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<LoginResponse<U>>(`users/login`, 'POST', { email, password })
   }
 
-  request = <U>(
-    endpoint: string,
-    method: AjaxMethod,
-    body?: Record<string, unknown> | null,
-    params: Record<string, unknown> = {},
-  ) => {
+  request = <U>(endpoint: string, method: AjaxMethod, body?: Obj | null, params: Obj = {}) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 

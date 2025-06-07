@@ -1,3 +1,5 @@
+import { Obj } from './types'
+
 type ErrorMessage = {
   message: string
 }
@@ -23,7 +25,7 @@ export type AjaxMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 export const ajax = async <T>(
   url: string,
   method: AjaxMethod,
-  body?: Record<string, unknown> | null,
+  body?: Obj | null,
   { credentials, headers }: AjaxOptions = {},
 ): Promise<T> => {
   const response = await fetch(url, {
