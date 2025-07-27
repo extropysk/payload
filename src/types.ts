@@ -22,7 +22,6 @@ export type Base = {
 
 export type User = Base & {
   email: string
-  [key: string]: unknown
 }
 
 type Operator = (typeof OPERATORS)[number]
@@ -50,8 +49,11 @@ export type PaginatedDocs<T> = {
   totalPages: number
 }
 
-export type Doc<T> = {
+export type BaseResponse = {
   message: string
+}
+
+export type Doc<T> = BaseResponse & {
   doc: T
 }
 
@@ -67,8 +69,7 @@ export type FindParams = BaseParams & {
   limit?: number
 }
 
-export type LoginResponse<U extends User> = {
-  message: string
+export type UserResponse<U extends User | null> = BaseResponse & {
   user: U
   token: string
   exp: number

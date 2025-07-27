@@ -5,10 +5,11 @@ import {
   CountResponse,
   Doc,
   FindParams,
-  LoginResponse,
+  UserResponse,
   Obj,
   PaginatedDocs,
   User,
+  BaseResponse,
 } from './types'
 
 type PayloadConfig = {
@@ -52,8 +53,16 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<CountResponse>(`${String(collection)}/count`, 'GET', null, params)
   }
 
+  me = <U extends User = User>() => {
+    return this.request<UserResponse<U | null>>(`users/me`, 'GET')
+  }
+
   login = <U extends User = User>(email: string, password: string) => {
-    return this.request<LoginResponse<U>>(`users/login`, 'POST', { email, password })
+    return this.request<UserResponse<U>>(`users/login`, 'POST', { email, password })
+  }
+
+  logout = () => {
+    return this.request<BaseResponse>(`users/logout`, 'POST')
   }
 
   request = <U>(endpoint: string, method?: AjaxMethod, body?: Obj | null, params?: Obj) => {
