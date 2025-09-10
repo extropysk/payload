@@ -25,14 +25,14 @@ export type AjaxMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 type AjaxArgs = {
   url: string
   method?: AjaxMethod
-  body?: Obj | null
+  body?: Obj
   options?: AjaxOptions
 }
 
 export const ajax = async <T>({
   url,
+  body,
   method = 'GET',
-  body = null,
   options: { credentials, headers } = {},
 }: AjaxArgs): Promise<T> => {
   const response = await fetch(url, {

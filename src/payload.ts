@@ -22,6 +22,13 @@ const DEFAULT_CONFIG: PayloadConfig = {
   baseUrl: '',
 }
 
+type RequestArgs = {
+  endpoint: string
+  method?: AjaxMethod
+  body?: Obj
+  params?: Obj
+}
+
 export class Payload<T extends Record<string, unknown>> {
   readonly config: PayloadConfig
 
@@ -30,42 +37,54 @@ export class Payload<T extends Record<string, unknown>> {
   }
 
   find = <Key extends keyof T>(collection: Key, params?: FindParams) => {
-    return this.request<PaginatedDocs<T[Key]>>(String(collection), 'GET', null, params)
+    return this.request<PaginatedDocs<T[Key]>>({
+      endpoint: String(collection),
+      method: 'GET',
+      params,
+    })
   }
 
   findByID = <Key extends keyof T>(collection: Key, id: string, params?: BaseParams) => {
-    return this.request<T[Key]>(`${String(collection)}/${id}`, 'GET', null, params)
+    return this.request<T[Key]>({ endpoint: `${String(collection)}/${id}`, method: 'GET', params })
   }
 
   create = <Key extends keyof T>(collection: Key, body: Partial<T[Key]>) => {
-    return this.request<Doc<T[Key]>>(String(collection), 'POST', body)
+    return this.request<Doc<T[Key]>>({ endpoint: String(collection), method: 'POST', body })
   }
 
   update = <Key extends keyof T>(collection: Key, id: string, body: Partial<T[Key]>) => {
-    return this.request<Doc<T[Key]>>(`${String(collection)}/${id}`, 'PUT', body)
+    return this.request<Doc<T[Key]>>({
+      endpoint: `${String(collection)}/${id}`,
+      method: 'PUT',
+      body,
+    })
   }
 
   delete = <Key extends keyof T>(collection: Key, id: string) => {
-    return this.request<T[Key]>(`${String(collection)}/${id}`, 'DELETE')
+    return this.request<T[Key]>({ endpoint: `${String(collection)}/${id}`, method: 'DELETE' })
   }
 
   count = <Key extends keyof T>(collection: Key, params?: FindParams) => {
-    return this.request<CountResponse>(`${String(collection)}/count`, 'GET', null, params)
+    return this.request<CountResponse>({ endpoint: `${String(collection)}/count`, params })
   }
 
   me = <U extends User = User>() => {
-    return this.request<UserResponse<U | null>>(`users/me`, 'GET')
+    return this.request<UserResponse<U | null>>({ endpoint: `users/me` })
   }
 
   login = <U extends User = User>(email: string, password: string) => {
-    return this.request<UserResponse<U>>(`users/login`, 'POST', { email, password })
+    return this.request<UserResponse<U>>({
+      endpoint: `users/login`,
+      method: 'POST',
+      body: { email, password },
+    })
   }
 
   logout = () => {
-    return this.request<BaseResponse>(`users/logout`, 'POST')
+    return this.request<BaseResponse>({ endpoint: `users/logout`, method: 'POST' })
   }
 
-  request = <U>(endpoint: string, method?: AjaxMethod, body?: Obj | null, params?: Obj) => {
+  request = <U>({ endpoint, method = 'GET', body, params }: RequestArgs) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 
