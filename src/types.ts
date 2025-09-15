@@ -77,5 +77,4 @@ export type UserResponse<U extends User | null> = BaseResponse & {
 
 export type CountResponse = { totalDocs: number }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Obj = Record<string, any>
