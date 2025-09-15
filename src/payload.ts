@@ -27,6 +27,7 @@ type RequestArgs = {
   method?: AjaxMethod
   body?: Obj
   params?: Obj
+  headers?: Record<string, string>
 }
 
 export class Payload<T extends Record<string, unknown>> {
@@ -84,16 +85,19 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<BaseResponse>({ endpoint: `users/logout`, method: 'POST' })
   }
 
-  request = <U>({ endpoint, method = 'GET', body, params }: RequestArgs) => {
+  request = <U>({ endpoint, method = 'GET', body, params, headers }: RequestArgs) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 
-    const headers: Record<string, string> = { ...this.config.options?.headers }
     const token = this.config.getBearerToken?.()
-    if (token) {
-      headers.Authorization = `Bearer ${token}`
+    const options = {
+      ...this.config.options,
+      headers: {
+        ...this.config.options?.headers,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
     }
-    const options = { ...this.config.options, headers }
 
     return ajax<U>({ url, method, body, options })
   }
