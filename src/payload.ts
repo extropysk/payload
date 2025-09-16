@@ -85,6 +85,16 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<BaseResponse>({ endpoint: `users/logout`, method: 'POST' })
   }
 
+  upload = <Key extends keyof T>(collection: Key, file: Blob, body: Partial<T[Key]>) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('_payload', JSON.stringify(body))
+
+    const url = `${this.config.baseUrl}/api/${String(collection)}`
+
+    return ajax<Doc<T[Key]>>({ url, method: 'POST', body: formData, options: this.config.options })
+  }
+
   request = <U>({ endpoint, method = 'GET', body, params, headers }: RequestArgs) => {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
@@ -93,6 +103,7 @@ export class Payload<T extends Record<string, unknown>> {
     const options = {
       ...this.config.options,
       headers: {
+        'Content-Type': 'application/json',
         ...this.config.options?.headers,
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,

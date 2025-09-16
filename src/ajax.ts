@@ -39,11 +39,10 @@ export const ajax = async <T>({
     method,
     credentials,
     headers: {
-      'Content-Type': 'application/json',
       Accept: 'application/json',
       ...headers,
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body instanceof FormData || !body ? body : JSON.stringify(body),
   })
 
   const data = await response.json()
