@@ -49,15 +49,21 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<T[Key]>({ endpoint: `${String(collection)}/${id}`, method: 'GET', params })
   }
 
-  create = <Key extends keyof T>(collection: Key, body: Partial<T[Key]>) => {
-    return this.request<Doc<T[Key]>>({ endpoint: String(collection), method: 'POST', body })
+  create = <Key extends keyof T>(collection: Key, body: Partial<T[Key]>, params?: BaseParams) => {
+    return this.request<Doc<T[Key]>>({ endpoint: String(collection), method: 'POST', body, params })
   }
 
-  update = <Key extends keyof T>(collection: Key, id: string, body: Partial<T[Key]>) => {
+  update = <Key extends keyof T>(
+    collection: Key,
+    id: string,
+    body: Partial<T[Key]>,
+    params?: BaseParams,
+  ) => {
     return this.request<Doc<T[Key]>>({
       endpoint: `${String(collection)}/${id}`,
       method: 'PUT',
       body,
+      params,
     })
   }
 
