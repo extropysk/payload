@@ -190,12 +190,9 @@ describe('ajax', () => {
         json: () => Promise.resolve({ message: 'Invalid input' }),
       })
 
-      try {
-        await ajax({ url: 'https://api.example.com/test' })
-      } catch (error) {
-        expect(error).toBeInstanceOf(AjaxError)
-        expect((error as AjaxError).statusCode).toBe(400)
-      }
+      await expect(ajax({ url: 'https://api.example.com/test' })).rejects.toMatchObject({
+        statusCode: 400,
+      })
     })
 
     it('should include message from response in AjaxError', async () => {
@@ -206,11 +203,9 @@ describe('ajax', () => {
         json: () => Promise.resolve({ message: 'Server error occurred' }),
       })
 
-      try {
-        await ajax({ url: 'https://api.example.com/test' })
-      } catch (error) {
-        expect((error as AjaxError).message).toBe('Server error occurred')
-      }
+      await expect(ajax({ url: 'https://api.example.com/test' })).rejects.toMatchObject({
+        message: 'Server error occurred',
+      })
     })
 
     it('should use statusText when message is not provided', async () => {
@@ -221,11 +216,9 @@ describe('ajax', () => {
         json: () => Promise.resolve({}),
       })
 
-      try {
-        await ajax({ url: 'https://api.example.com/test' })
-      } catch (error) {
-        expect((error as AjaxError).message).toBe('Internal Server Error')
-      }
+      await expect(ajax({ url: 'https://api.example.com/test' })).rejects.toMatchObject({
+        message: 'Internal Server Error',
+      })
     })
 
     it('should include errors array in AjaxError', async () => {
@@ -237,11 +230,9 @@ describe('ajax', () => {
         json: () => Promise.resolve({ message: 'Validation failed', errors }),
       })
 
-      try {
-        await ajax({ url: 'https://api.example.com/test' })
-      } catch (error) {
-        expect((error as AjaxError).errors).toEqual(errors)
-      }
+      await expect(ajax({ url: 'https://api.example.com/test' })).rejects.toMatchObject({
+        errors,
+      })
     })
 
     it('should default errors to empty array when not provided', async () => {
@@ -252,11 +243,9 @@ describe('ajax', () => {
         json: () => Promise.resolve({ message: 'Not found' }),
       })
 
-      try {
-        await ajax({ url: 'https://api.example.com/test' })
-      } catch (error) {
-        expect((error as AjaxError).errors).toEqual([])
-      }
+      await expect(ajax({ url: 'https://api.example.com/test' })).rejects.toMatchObject({
+        errors: [],
+      })
     })
   })
 })
