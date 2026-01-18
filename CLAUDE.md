@@ -11,7 +11,8 @@ This is `@extropysk/payload`, a TypeScript SDK for Payload CMS that provides a t
 - **Build**: `yarn build` (runs TypeScript compilation then Vite build)
 - **Dev mode**: `yarn dev` (builds with watch mode)
 - **Lint**: `yarn lint` (ESLint on src directory)
-- **Test**: `yarn test` (Vitest - no tests currently exist)
+- **Test**: `yarn test` (Vitest watch mode)
+- **Test**: `yarn test:run` (Vitest)
 
 ## Architecture
 
