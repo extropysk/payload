@@ -16,6 +16,7 @@ type PayloadConfig = {
   baseUrl: string
   options?: AjaxOptions
   getBearerToken?: () => string | null
+  setBearerToken?: (token: string | null) => void
 }
 
 const DEFAULT_CONFIG: PayloadConfig = {
@@ -79,16 +80,22 @@ export class Payload<T extends Record<string, unknown>> {
     return this.request<UserResponse<U | null>>({ endpoint: `users/me` })
   }
 
-  login = <U extends User = User>(email: string, password: string) => {
-    return this.request<UserResponse<U>>({
+  login = async <U extends User = User>(email: string, password: string) => {
+    const res = await this.request<UserResponse<U>>({
       endpoint: `users/login`,
       method: 'POST',
       body: { email, password },
     })
+
+    this.config.setBearerToken?.(res.token)
+    return res
   }
 
-  logout = () => {
-    return this.request<BaseResponse>({ endpoint: `users/logout`, method: 'POST' })
+  logout = async () => {
+    const res = await this.request<BaseResponse>({ endpoint: `users/logout`, method: 'POST' })
+
+    this.config.setBearerToken?.(null)
+    return res
   }
 
   upload = <Key extends keyof T>(collection: Key, file: Blob, body: Partial<T[Key]>) => {
