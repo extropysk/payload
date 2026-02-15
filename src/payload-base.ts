@@ -65,20 +65,22 @@ export class PayloadBase<T extends Record<string, unknown>> {
     return this.request<CountResponse>({ endpoint: `${String(collection)}/count`, params })
   }
 
+  protected buildOptions(extraHeaders?: Record<string, string>): AjaxOptions {
+    const token = this.config.getBearerToken?.()
+    return {
+      ...this.config.options,
+      headers: {
+        ...this.config.options?.headers,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...extraHeaders,
+      },
+    }
+  }
+
   request<U>({ endpoint, method = 'GET', body, params, headers }: RequestArgs) {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
-
-    const token = this.config.getBearerToken?.()
-    const options = {
-      ...this.config.options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...this.config.options?.headers,
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...headers,
-      },
-    }
+    const options = this.buildOptions({ 'Content-Type': 'application/json', ...headers })
 
     return ajax<U>({ url, method, body, options })
   }
