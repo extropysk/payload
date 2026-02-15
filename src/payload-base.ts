@@ -27,7 +27,7 @@ export class PayloadBase<T extends Record<string, unknown>> {
     this.config = { ...DEFAULT_CONFIG, ...config }
   }
 
-  find = <Key extends keyof T>(collection: Key, params?: FindParams) => {
+  find<Key extends keyof T>(collection: Key, params?: FindParams) {
     return this.request<PaginatedDocs<T[Key]>>({
       endpoint: String(collection),
       method: 'GET',
@@ -35,20 +35,20 @@ export class PayloadBase<T extends Record<string, unknown>> {
     })
   }
 
-  findByID = <Key extends keyof T>(collection: Key, id: string, params?: BaseParams) => {
+  findByID<Key extends keyof T>(collection: Key, id: string, params?: BaseParams) {
     return this.request<T[Key]>({ endpoint: `${String(collection)}/${id}`, method: 'GET', params })
   }
 
-  create = <Key extends keyof T>(collection: Key, body: Partial<T[Key]>, params?: BaseParams) => {
+  create<Key extends keyof T>(collection: Key, body: Partial<T[Key]>, params?: BaseParams) {
     return this.request<Doc<T[Key]>>({ endpoint: String(collection), method: 'POST', body, params })
   }
 
-  update = <Key extends keyof T>(
+  update<Key extends keyof T>(
     collection: Key,
     id: string,
     body: Partial<T[Key]>,
     params?: BaseParams,
-  ) => {
+  ) {
     return this.request<Doc<T[Key]>>({
       endpoint: `${String(collection)}/${id}`,
       method: 'PUT',
@@ -57,15 +57,15 @@ export class PayloadBase<T extends Record<string, unknown>> {
     })
   }
 
-  delete = <Key extends keyof T>(collection: Key, id: string) => {
+  delete<Key extends keyof T>(collection: Key, id: string) {
     return this.request<T[Key]>({ endpoint: `${String(collection)}/${id}`, method: 'DELETE' })
   }
 
-  count = <Key extends keyof T>(collection: Key, params?: FindParams) => {
+  count<Key extends keyof T>(collection: Key, params?: FindParams) {
     return this.request<CountResponse>({ endpoint: `${String(collection)}/count`, params })
   }
 
-  request = <U>({ endpoint, method = 'GET', body, params, headers }: RequestArgs) => {
+  request<U>({ endpoint, method = 'GET', body, params, headers }: RequestArgs) {
     const query = qs.stringify(params, { addQueryPrefix: true })
     const url = `${this.config.baseUrl}/api/${endpoint}${query}`
 
